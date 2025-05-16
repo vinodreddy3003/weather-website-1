@@ -1,48 +1,75 @@
 import React from "react";
-import { Box, Typography, Stack } from "@mui/material";
-import { WaterPercent, WeatherWindy } from "mdi-material-ui";
+import { Box, Typography, Paper, Stack } from "@mui/material";
 
-const WeatherCard = ({ weather }: { weather: any }) => {
+interface WeatherData {
+  name: string;
+  main: {
+    temp: number;
+    humidity: number;
+  };
+  weather: {
+    description: string;
+    icon: string;
+  }[];
+}
+
+interface Props {
+  weather: WeatherData;
+}
+
+const WeatherCard: React.FC<Props> = ({ weather }) => {
+  const iconUrl = `https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`;
+
   return (
-    <Box
+    <Paper
+      elevation={4}
       sx={{
-        marginTop: "32px",
-        backgroundColor: "rgba(255, 255, 255, 0.2)",
-        padding: "16px",
-        borderRadius: "16px",
+        borderRadius: 4,
+        padding: 4,
+        background: "rgba(255, 255, 255, 0.2)",
+        backdropFilter: "blur(10px)",
+        color: "#fff",
         textAlign: "center",
-        color: "white",
-        width: "100%",
-        maxWidth: 400,
+        boxShadow: "0 8px 32px rgba(31, 38, 135, 0.2)",
       }}
     >
-      <Typography variant="h3" fontWeight={600} mt={1}>
-        {weather.main.temp}°C
-      </Typography>
-      <Typography variant="h6" mt={1}>
+      <Typography
+        variant="h4"
+        sx={{ fontWeight: 600, mb: 1, textShadow: "1px 1px 2px rgba(0,0,0,0.2)" }}
+      >
         {weather.name}
+      </Typography>
+
+      <img src={iconUrl} alt={weather.weather[0].description} width={100} />
+
+      <Typography variant="h5" sx={{ mt: 1, textTransform: "capitalize" }}>
+        {weather.weather[0].description}
       </Typography>
 
       <Stack
         direction="row"
-        justifyContent="space-around"
-        alignItems="center"
-        spacing={2}
-        mt={4}
+        spacing={4}
+        justifyContent="center"
+        sx={{ mt: 3 }}
       >
-        <Stack direction="row" >
-            <WaterPercent />
-          <Stack> <Typography>{weather.main.humidity}%</Typography>
-          <Typography>Humidity</Typography></Stack>
-          
-        </Stack>
-        <Stack direction="row" >
-          <WeatherWindy />
-          <Stack> <Typography>{(weather.wind.speed * 3.6).toFixed(2)} km/h</Typography>
-          <Typography>Wind Speed</Typography></Stack>
-        </Stack>
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 500 }}>
+            🌡️ Temp
+          </Typography>
+          <Typography variant="body1">
+            {Math.round(weather.main.temp)}°C
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 500 }}>
+            💧 Humidity
+          </Typography>
+          <Typography variant="body1">
+            {weather.main.humidity}%
+          </Typography>
+        </Box>
       </Stack>
-    </Box>
+    </Paper>
   );
 };
 
